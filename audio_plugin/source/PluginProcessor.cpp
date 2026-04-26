@@ -71,6 +71,7 @@ void PluginProcessor::prepareToPlay(double sampleRate, int samplesPerBlock) {
   // Use this method as the place to do any pre-playback
   // initialisation that you need..
   juce::ignoreUnused(sampleRate, samplesPerBlock);
+
 }
 
 void PluginProcessor::releaseResources() {
@@ -118,6 +119,8 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer,
   for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
     buffer.clear(i, 0, buffer.getNumSamples());
 
+  float currentGain = parameters.gain.get();
+
   // This is the place where you'd normally do the guts of your plugin's
   // audio processing...
   // Make sure to reset the state if your inner loop is processing
@@ -128,6 +131,9 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer,
     auto* channelData = buffer.getWritePointer(channel);
     juce::ignoreUnused(channelData);
     // ..do something to the data...
+    for (auto sample = 0; sample < buffer.getNumSamples(); sample++) {
+      channelData[sample] *= currentGain;
+    }
   }
 }
 

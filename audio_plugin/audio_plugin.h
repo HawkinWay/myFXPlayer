@@ -21,6 +21,8 @@ END_JUCE_MODULE_DECLARATION
 #pragma once
 
 #include <juce_audio_processors/juce_audio_processors.h>
+#include <memory>
+#include "include/Parameters.h"
 #include "include/PluginProcessor.h"
 #include "include/PluginEditor.h"
 
