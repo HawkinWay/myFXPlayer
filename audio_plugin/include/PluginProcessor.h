@@ -38,6 +38,7 @@ public:
 
 private:
   Parameters parameters{*this};
+  Noise noise;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PluginProcessor)
 };
 }  // namespace audio_plugin
