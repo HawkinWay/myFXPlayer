@@ -119,7 +119,12 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer,
   for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
     buffer.clear(i, 0, buffer.getNumSamples());
 
+
   float currentGain = parameters.gain.get();
+  auto NoiseButton = parameters.gainButton.get();
+  if (!NoiseButton) {
+    currentGain = 0.f;
+  }
   noise.process(buffer,currentGain);
 
 

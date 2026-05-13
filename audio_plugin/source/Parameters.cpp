@@ -13,9 +13,22 @@ namespace {
     processor.addParameter(parameter.release());
     return parameterReference;
   }
+
+  juce::AudioParameterBool &createGainButtonParameter(juce::AudioProcessor& processor) {
+    constexpr auto versionHint = 1;
+    auto parameter = std::make_unique<juce::AudioParameterBool>(
+      juce::ParameterID{"gainButton",versionHint},
+      "Gain Button",
+      false
+    );
+    auto &parameterReference = *parameter;
+    processor.addParameter(parameter.release());
+    return parameterReference;
+  }
 }
 
-Parameters::Parameters(juce::AudioProcessor& processor) : gain(createGainParameter(processor)) {
+Parameters::Parameters(juce::AudioProcessor& processor) : gain(createGainParameter(processor)),
+gainButton(createGainButtonParameter(processor)) {
 
 }
 }  // namespace audio_plugin

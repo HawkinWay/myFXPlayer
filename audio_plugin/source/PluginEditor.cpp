@@ -1,18 +1,27 @@
 namespace audio_plugin {
 PluginEditor::PluginEditor(PluginProcessor& p)
-    : AudioProcessorEditor(&p), gainAttachment(p.getPrameterRefs().gain, gainSlider), processorRef(p){
+    :
+AudioProcessorEditor(&p),
+gainAttachment(p.getPrameterRefs().gain, gainSlider),
+gainButtonAttachment(p.getPrameterRefs().gainButton, gainButton),
+processorRef(p){
+
   juce::ignoreUnused(processorRef);
 
-  gainSlider.setSliderStyle(juce::Slider::LinearHorizontal);
   gainSlider.setRange(0.f, 1.f, 0.01f);
-  //gainSlider.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 50, 20);
-  addAndMakeVisible(gainSlider);
+  gainSlider.setValue(0.5f);
+  gainSlider.setTextBoxStyle(juce::Slider::TextBoxRight, false, 50, 20);
 
-  gainLabel.setText("Gain", juce::dontSendNotification); // 设置显示的文字
-  gainLabel.setJustificationType(juce::Justification::centred); // 文字居中
-  gainLabel.attachToComponent(&gainSlider, true); // 【核心】将标签绑定到 Slider
-  // 第二个参数 false 表示标签在 Slider 的上方；true 表示在左侧
+  gainLabel.setText("Gain", juce::dontSendNotification);
+
+  gainButton.onClick = [this]() {
+    gainButton.setButtonText("");
+  };
+  gainButton.onClick();
+
+  addAndMakeVisible(gainSlider);
   addAndMakeVisible(gainLabel);
+  addAndMakeVisible(gainButton);
 
   // Make sure that before the constructor has finished, you've set the
   // editor's size to whatever you need it to be.
@@ -35,8 +44,8 @@ void PluginEditor::paint(juce::Graphics& g) {
 void PluginEditor::resized() {
   // This is generally where you'll want to lay out the positions of any
   // subcomponents in your editor..
-  gainSlider.setBounds(getLocalBounds());
-  auto bounds = getLocalBounds();
-  gainSlider.setBounds(bounds.withSize(300, 40).withCentre(bounds.getCentre()));
+  gainSlider.setBounds(80, 10, getWidth() - 100, 20);
+  gainLabel.setBounds(40, 10, 40, 20);
+  gainButton.setBounds(10, 10, 50, 20);
 }
 }  // namespace audio_plugin

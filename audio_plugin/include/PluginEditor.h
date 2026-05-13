@@ -11,7 +11,10 @@ public:
 private:
   juce::Slider gainSlider;
   juce::Label gainLabel{"gain label", "Gain"};
+  juce::ToggleButton gainButton{"Gain Button"};
   juce::SliderParameterAttachment gainAttachment;
+  juce::ButtonParameterAttachment gainButtonAttachment;
+
   // This reference is provided as a quick way for your editor to
   // access the processor object that created it.
   PluginProcessor& processorRef;
