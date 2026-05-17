@@ -32,13 +32,14 @@ public:
   void getStateInformation(juce::MemoryBlock& destData) override;
   void setStateInformation(const void* data, int sizeInBytes) override;
 
-  Parameters& getPrameterRefs() noexcept {
+  Parameters& getParameterRefs() noexcept {
     return parameters;
   }
 
 private:
   Parameters parameters{*this};
   Noise noise;
+  WaveformSynth waveformSynth;
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PluginProcessor)
 };
 }  // namespace audio_plugin

@@ -72,6 +72,7 @@ void PluginProcessor::prepareToPlay(double sampleRate, int samplesPerBlock) {
   // initialisation that you need..
   juce::ignoreUnused(sampleRate, samplesPerBlock);
   noise.prepare(sampleRate, samplesPerBlock);
+  waveformSynth.prepare(sampleRate, samplesPerBlock);
 }
 
 void PluginProcessor::releaseResources() {
@@ -126,6 +127,15 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer,
     currentGain = 0.f;
   }
   noise.process(buffer,currentGain);
+
+  int waveformIndex = parameters.waveform.getIndex();
+  float currentFrequency = parameters.frequency.get();
+  auto FrequencyButton = parameters.frequencyButton.get();
+  if (!FrequencyButton) {
+    currentFrequency = 0.f;
+  }
+  waveformSynth.setWaveformType(static_cast<WaveformSynth::WaveformType>(waveformIndex));
+  waveformSynth.process(buffer, currentFrequency);
 
 
   // This is the place where you'd normally do the guts of your plugin's

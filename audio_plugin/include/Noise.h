@@ -4,15 +4,14 @@ namespace audio_plugin {
 class Noise {
 public:
   void prepare(double sampleRate, int samplesPerBlock) noexcept{
-    juce::ignoreUnused(sampleRate);
     smoothedNoiseGain.reset(sampleRate, 0.02);
   }
 
   void process(juce::AudioBuffer<float> &buffer, float targetGain) noexcept {
 
     smoothedNoiseGain.setTargetValue(targetGain);
-#if 0
-    for (auto frameIndex : std::views::iota(0, buffer.getNumSamples())) {
+
+    for (auto sampleIndex : std::views::iota(0, buffer.getNumSamples())) {
 
       float currenGain = smoothedNoiseGain.getNextValue();
 
@@ -20,11 +19,11 @@ public:
         auto *data = buffer.getWritePointer(channelIndex);
         const float noise = getRamdomValue() * currenGain;
         //buffer.setSample(channelIndex,frameIndex,noise);
-        data[frameIndex] = noise;
+        data[sampleIndex] = noise;
       }
     }
-#endif
 
+#if 0
     for (const auto channel : std::views::iota(0, buffer.getNumChannels())) {
 
       auto* data = buffer.getWritePointer(channel);
@@ -36,6 +35,7 @@ public:
       }
 
     }
+#endif
   }
 
   void release() noexcept {
@@ -49,5 +49,6 @@ public:
 private:
   juce::Random random;
   juce::LinearSmoothedValue<float> smoothedNoiseGain;
+
 };
 }

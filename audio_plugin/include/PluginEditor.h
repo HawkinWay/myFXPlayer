@@ -15,6 +15,16 @@ private:
   juce::SliderParameterAttachment gainAttachment;
   juce::ButtonParameterAttachment gainButtonAttachment;
 
+  juce::Slider frequencySlider;
+  juce::Label frequencyLabel{"frequency label", "Frequency"};
+  juce::ToggleButton frequencyButton{"Frequency Button"};
+  juce::ComboBox waveformBox;
+  juce::Label waveformLabel{"waveform label", "Waveform"};
+  juce::SliderParameterAttachment frequencyAttachment;
+  juce::ButtonParameterAttachment frequencyButtonAttachment;
+  juce::ComboBoxParameterAttachment waveformAttachment;
+
+  
   // This reference is provided as a quick way for your editor to
   // access the processor object that created it.
   PluginProcessor& processorRef;
