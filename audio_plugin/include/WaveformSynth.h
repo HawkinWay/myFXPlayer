@@ -18,10 +18,10 @@ public:
     updateAngleData();
   }
 
-  void process(juce::AudioBuffer<float>& buffer, float targerFrequency) noexcept {
+  void process(juce::AudioBuffer<float>& buffer, float targetFrequency) noexcept {
     updateWaveform();
 
-    frequency.setTargetValue(targerFrequency);
+    frequency.setTargetValue(targetFrequency);
 
     auto level = 0.25f;
 
