@@ -17,9 +17,9 @@ public:
 
       for (auto channelIndex : std::views::iota(0, buffer.getNumChannels())) {
         auto *data = buffer.getWritePointer(channelIndex);
-        const float noise = getRamdomValue() * currenGain;
+        const float noise = getRandomValue() * currenGain;
         //buffer.setSample(channelIndex,frameIndex,noise);
-        data[sampleIndex] = noise;
+        data[sampleIndex] += noise;
       }
     }
 
@@ -42,7 +42,7 @@ public:
 
   }
 
-  float getRamdomValue() noexcept {
+  float getRandomValue() noexcept {
     return random.nextFloat() * 2.f - 1.f;
   }
 
