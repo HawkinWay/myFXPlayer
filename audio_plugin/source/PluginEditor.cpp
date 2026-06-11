@@ -11,8 +11,8 @@ processorRef(p){
 
   juce::ignoreUnused(processorRef);
 
-  gainSlider.setRange(0.f, 0.5f, 0.01f);
-  gainSlider.setValue(0.25f);
+  gainSlider.setRange(0.f, 0.25f, 0.01f);
+  gainSlider.setValue(0.12f);
   gainSlider.setTextBoxStyle(juce::Slider::TextBoxRight, false, 50, 20);
 
   gainLabel.setText("Noise", juce::dontSendNotification);

@@ -137,6 +137,9 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer,
   waveformSynth.setWaveformType(static_cast<WaveformSynth::WaveformType>(waveformIndex));
   waveformSynth.process(buffer, currentFrequency);
 
+  if(sampleSource.isLoaded()){
+    sampleSource.process(buffer);
+  }
 
   // This is the place where you'd normally do the guts of your plugin's
   // audio processing...

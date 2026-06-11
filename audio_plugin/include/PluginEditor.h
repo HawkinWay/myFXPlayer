@@ -22,7 +22,9 @@ private:
   juce::Label waveformLabel{"waveform label", "Waveform"};
   juce::SliderParameterAttachment frequencyAttachment;
   juce::ButtonParameterAttachment frequencyButtonAttachment;
-  juce::ComboBoxParameterAttachment waveformAttachment;
+  juce::ComboBoxParameterAttachment waveformAttachment
+
+  
 
   
   // This reference is provided as a quick way for your editor to
