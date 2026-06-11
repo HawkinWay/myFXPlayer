@@ -40,8 +40,9 @@ void SampleSource::process(juce::AudioBuffer<float>& buffer) {
 
   for (int sampleIdx = 0; sampleIdx < numOutputSamples; ++sampleIdx){
     int posIdx = static_cast<int>(readPosition);
+    float fractionalPart = static_cast<float>(readPosition - posIdx);
 
-    if (posIdx >= numSampleSamples){
+    if (posIdx >= numSampleSamples - 1) {
       if (loop){
         readPosition = 0.0;
         posIdx = 0;
@@ -53,16 +54,26 @@ void SampleSource::process(juce::AudioBuffer<float>& buffer) {
       }
     }
 
+    int nextPosIdx = (posIdx + 1) % numSampleSamples;
+
     for (int ch = 0; ch < numOutputChannels; ++ch)
     {
       int sourceChannel = std::min(ch, numSampleChannels - 1);
       auto* data = buffer.getWritePointer(ch);
-      float sample = sampleBuffer.getReadPointer(sourceChannel)[posIdx];
+
+      float sample1 = sampleBuffer.getReadPointer(sourceChannel)[posIdx];
+      float sample2 = sampleBuffer.getReadPointer(sourceChannel)[nextPosIdx];
+
+      float interpolatedSample = sample1 + fractionalPart * (sample2 - sample1);
       data[sampleIdx] += sample * level;
     }
 
     readPosition += speed;
   }
+}
+
+void SampleSource::setLevel(float newLevel){
+  level = juce::jlimit(0.f, 1.f, newLevel);
 }
 
 void SampleSource::setSpeed(float newSpeed) {
@@ -73,7 +84,15 @@ void SampleSource::setLoop(bool shouldLoop) {
   loop = shouldLoop;
 }
 
-bool SampleSource::isLoaded(){
+void SampleSource::stop() {
+  readPosition = sampleBuffer.getNumSamples();
+}
 
+void SampleSource::restart() {
+  readPosition = 0.0;
+}
+
+bool SampleSource::isLoaded(){
+  return sampleBuffer.getNumSamples() > 0;
 }
 }
