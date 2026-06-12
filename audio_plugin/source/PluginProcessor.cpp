@@ -1,4 +1,25 @@
 namespace audio_plugin {
+juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParameterLayout() {
+  juce::AudioProcessorValueTreeState::ParameterLayout layout;
+
+  layout.add(std::make_unique<juce::AudioParameterFloat>(
+      juce::ParameterID{"gain", 1}, "Gain", juce::NormalisableRange<float>(0.0f, 0.25f, 0.01f), 0.12f));
+
+  layout.add(std::make_unique<juce::AudioParameterBool>(
+      juce::ParameterID{"gainButton", 1}, "Gain Button", false));
+
+  layout.add(std::make_unique<juce::AudioParameterChoice>(
+      juce::ParameterID{"waveform", 1}, "Waveform", juce::StringArray{"Sine", "Sawtooth", "Square"}, 0));
+
+  layout.add(std::make_unique<juce::AudioParameterFloat>(
+      juce::ParameterID{"frequency", 1}, "Frequency", juce::NormalisableRange<float>(50.0f, 500.0f, 0.01f), 200.0f));
+
+  layout.add(std::make_unique<juce::AudioParameterBool>(
+      juce::ParameterID{"frequencyButton", 1}, "Frequency Button", false));
+
+  return layout;
+}
+
 PluginProcessor::PluginProcessor()
     : AudioProcessor(
           BusesProperties()
@@ -8,7 +29,7 @@ PluginProcessor::PluginProcessor()
 #endif
               .withOutput("Output", juce::AudioChannelSet::stereo(), true)
 #endif
-      ) {
+      ),apvts(*this, nullptr, "Parameters", createParameterLayout()) {
 }
 
 const juce::String PluginProcessor::getName() const {
@@ -121,25 +142,30 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer,
     buffer.clear(i, 0, buffer.getNumSamples());
 
 
-  float currentGain = parameters.gain.get();
-  auto NoiseButton = parameters.gainButton.get();
+  // float currentGain = parameters.gain.get();
+  float currentGain = apvts.getRawParameterValue("gain")->load();
+  // auto NoiseButton = parameters.gainButton.get();
+  bool NoiseButton = apvts.getRawParameterValue("gainButton")->load() > 0.5f;
   if (!NoiseButton) {
     currentGain = 0.f;
   }
   noise.process(buffer,currentGain);
 
-  int waveformIndex = parameters.waveform.getIndex();
-  float currentFrequency = parameters.frequency.get();
-  auto FrequencyButton = parameters.frequencyButton.get();
-  if (!FrequencyButton) {
-    currentFrequency = 0.f;
+//  int waveformIndex = parameters.waveform.getIndex();
+//  float currentFrequency = parameters.frequency.get();
+//  auto FrequencyButton = parameters.frequencyButton.get();
+  float currentFreq = apvts.getRawParameterValue("frequency")->load();
+  bool freqButton = apvts.getRawParameterValue("frequencyButton")->load() > 0.5f;
+  int waveformType = static_cast<int>(apvts.getRawParameterValue("waveform")->load());
+  if (!freqButton) {
+    currentFreq = 0.f;
   }
-  waveformSynth.setWaveformType(static_cast<WaveformSynth::WaveformType>(waveformIndex));
-  waveformSynth.process(buffer, currentFrequency);
+  waveformSynth.setWaveformType(static_cast<WaveformSynth::WaveformType>(waveformType));
+  waveformSynth.process(buffer, currentFreq);
 
-  if(sampleSource.isLoaded()){
-    sampleSource.process(buffer);
-  }
+//  if(sampleSource.isLoaded()){
+//    sampleSource.process(buffer);
+//  }
 
   // This is the place where you'd normally do the guts of your plugin's
   // audio processing...
@@ -147,14 +173,14 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer,
   // the samples and the outer loop is handling the channels.
   // Alternatively, you can process the samples with the channels
   // interleaved by keeping the same state.
-  for (int channel = 0; channel < totalNumInputChannels; ++channel) {
-    auto* channelData = buffer.getWritePointer(channel);
-    juce::ignoreUnused(channelData);
-    // ..do something to the data...
-    for (auto sample = 0; sample < buffer.getNumSamples(); sample++) {
-      //channelData[sample] *= currentGain;
-    }
-  }
+//  for (int channel = 0; channel < totalNumInputChannels; ++channel) {
+//    auto* channelData = buffer.getWritePointer(channel);
+//    juce::ignoreUnused(channelData);
+//    // ..do something to the data...
+//    for (auto sample = 0; sample < buffer.getNumSamples(); sample++) {
+//      //channelData[sample] *= currentGain;
+//    }
+//  }
 }
 
 bool PluginProcessor::hasEditor() const {

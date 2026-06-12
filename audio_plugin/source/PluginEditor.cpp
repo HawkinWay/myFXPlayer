@@ -2,17 +2,17 @@ namespace audio_plugin {
 PluginEditor::PluginEditor(PluginProcessor& p)
     :
 AudioProcessorEditor(&p),
-gainAttachment(p.getParameterRefs().gain, gainSlider),
-gainButtonAttachment(p.getParameterRefs().gainButton, gainButton),
-frequencyAttachment(p.getParameterRefs().frequency, frequencySlider),
-frequencyButtonAttachment(p.getParameterRefs().frequencyButton, frequencyButton),
-waveformAttachment(p.getParameterRefs().waveform, waveformBox),
+//gainAttachment(p.getParameterRefs().gain, gainSlider),
+//gainButtonAttachment(p.getParameterRefs().gainButton, gainButton),
+//frequencyAttachment(p.getParameterRefs().frequency, frequencySlider),
+//frequencyButtonAttachment(p.getParameterRefs().frequencyButton, frequencyButton),
+//waveformAttachment(p.getParameterRefs().waveform, waveformBox),
 processorRef(p){
 
   juce::ignoreUnused(processorRef);
 
-  gainSlider.setRange(0.f, 0.25f, 0.01f);
-  gainSlider.setValue(0.12f);
+//  gainSlider.setRange(0.f, 0.25f, 0.01f);
+//  gainSlider.setValue(0.12f);
   gainSlider.setTextBoxStyle(juce::Slider::TextBoxRight, false, 50, 20);
 
   gainLabel.setText("Noise", juce::dontSendNotification);
@@ -22,8 +22,8 @@ processorRef(p){
   };
   gainButton.onClick();
 
-  frequencySlider.setRange(50.f,500.f, 0.01f);
-  frequencySlider.setValue(200.f);
+//  frequencySlider.setRange(50.f,500.f, 0.01f);
+//  frequencySlider.setValue(200.f);
   frequencySlider.setTextBoxStyle(juce::Slider::TextBoxRight, false, 50, 20);
 
   frequencyLabel.setText("Frequency", juce::dontSendNotification);
@@ -33,7 +33,10 @@ processorRef(p){
   };
   frequencyButton.onClick();
 
-  waveformBox.addItemList(p.getParameterRefs().waveform.choices, 1);
+  //waveformBox.addItemList(p.getParameterRefs().waveform.choices, 1);
+  waveformBox.addItem("Sine",1);
+  waveformBox.addItem("Sawtooth",2);
+  waveformBox.addItem("Square",3);
   waveformBox.setSelectedId(1);
 
   addAndMakeVisible(gainSlider);
@@ -43,6 +46,12 @@ processorRef(p){
   addAndMakeVisible(frequencyLabel);
   addAndMakeVisible(frequencyButton);
   addAndMakeVisible(waveformBox);
+
+  gainAttachment = std::make_unique<SliderAttachment>(processorRef.apvts, "gain", gainSlider);
+  gainButtonAttachment = std::make_unique<ButtonAttachment>(processorRef.apvts, "gainButton", gainButton);
+  frequencyAttachment = std::make_unique<SliderAttachment>(processorRef.apvts, "frequency", frequencySlider);
+  frequencyButtonAttachment = std::make_unique<ButtonAttachment>(processorRef.apvts, "frequencyButton", frequencyButton);
+  waveformAttachment = std::make_unique<ComboBoxAttachment>(processorRef.apvts, "waveform", waveformBox);
 
   // Make sure that before the constructor has finished, you've set the
   // editor's size to whatever you need it to be.

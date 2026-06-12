@@ -1,5 +1,9 @@
 #pragma once
 
+using SliderAttachment = juce::AudioProcessorValueTreeState::SliderAttachment;
+using ButtonAttachment = juce::AudioProcessorValueTreeState::ButtonAttachment;
+using ComboBoxAttachment = juce::AudioProcessorValueTreeState::ComboBoxAttachment;
+
 namespace audio_plugin {
 class PluginEditor : public juce::AudioProcessorEditor {
 public:
@@ -12,19 +16,24 @@ private:
   juce::Slider gainSlider;
   juce::Label gainLabel{"gain label", "Gain"};
   juce::ToggleButton gainButton{"Gain Button"};
-  juce::SliderParameterAttachment gainAttachment;
-  juce::ButtonParameterAttachment gainButtonAttachment;
+//  juce::SliderParameterAttachment gainAttachment;
+//  juce::ButtonParameterAttachment gainButtonAttachment;
+  std::unique_ptr<SliderAttachment> gainAttachment;
+  std::unique_ptr<ButtonAttachment> gainButtonAttachment;
 
   juce::Slider frequencySlider;
   juce::Label frequencyLabel{"frequency label", "Frequency"};
   juce::ToggleButton frequencyButton{"Frequency Button"};
   juce::ComboBox waveformBox;
   juce::Label waveformLabel{"waveform label", "Waveform"};
-  juce::SliderParameterAttachment frequencyAttachment;
-  juce::ButtonParameterAttachment frequencyButtonAttachment;
-  juce::ComboBoxParameterAttachment waveformAttachment
+//  juce::SliderParameterAttachment frequencyAttachment;
+//  juce::ButtonParameterAttachment frequencyButtonAttachment;
+//  juce::ComboBoxParameterAttachment waveformAttachment
+  std::unique_ptr<SliderAttachment> frequencyAttachment;
+  std::unique_ptr<ButtonAttachment> frequencyButtonAttachment;
+  std::unique_ptr<ComboBoxAttachment> waveformAttachment;
 
-  
+  juce::TextButton loadButton{"Load Button"};
 
   
   // This reference is provided as a quick way for your editor to

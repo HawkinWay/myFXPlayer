@@ -32,12 +32,14 @@ public:
   void getStateInformation(juce::MemoryBlock& destData) override;
   void setStateInformation(const void* data, int sizeInBytes) override;
 
-  Parameters& getParameterRefs() noexcept {
-    return parameters;
-  }
+//  Parameters& getParameterRefs() noexcept {
+//    return parameters;
+//  }
 
+  juce::AudioProcessorValueTreeState apvts;
 private:
-  Parameters parameters{*this};
+  // Parameters parameters{*this};    use apvts to replace parameter.h and .cpp
+  static juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();
   Noise noise;
   WaveformSynth waveformSynth;
   SampleSource sampleSource;
