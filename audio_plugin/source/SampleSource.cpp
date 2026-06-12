@@ -65,7 +65,7 @@ void SampleSource::process(juce::AudioBuffer<float>& buffer) {
       float sample2 = sampleBuffer.getReadPointer(sourceChannel)[nextPosIdx];
 
       float interpolatedSample = sample1 + fractionalPart * (sample2 - sample1);
-      data[sampleIdx] += sample * level;
+      data[sampleIdx] += interpolatedSample * level;
     }
 
     readPosition += speed;
