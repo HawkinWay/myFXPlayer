@@ -14,9 +14,7 @@ processorRef(p){
 //  gainSlider.setRange(0.f, 0.25f, 0.01f);
 //  gainSlider.setValue(0.12f);
   gainSlider.setTextBoxStyle(juce::Slider::TextBoxRight, false, 50, 20);
-
   gainLabel.setText("Noise", juce::dontSendNotification);
-
   gainButton.onClick = [this]() {
     gainButton.setButtonText("");
   };
@@ -25,9 +23,7 @@ processorRef(p){
 //  frequencySlider.setRange(50.f,500.f, 0.01f);
 //  frequencySlider.setValue(200.f);
   frequencySlider.setTextBoxStyle(juce::Slider::TextBoxRight, false, 50, 20);
-
   frequencyLabel.setText("Frequency", juce::dontSendNotification);
-
   frequencyButton.onClick = [this]() {
     frequencyButton.setButtonText("");
   };
@@ -39,6 +35,35 @@ processorRef(p){
   waveformBox.addItem("Square",3);
   waveformBox.setSelectedId(1);
 
+  loadButton.onClick =  [this](){
+    DBG("clicked");
+    fileChooser = std::make_unique<juce::FileChooser>("Select sample",
+                                            juce::File {},
+                                            "*.wav;*.mp3"
+                                          );
+
+    auto flags = juce::FileBrowserComponent::openMode
+                 | juce::FileBrowserComponent::canSelectFiles;
+
+    fileChooser->launchAsync(flags,
+                        [this](const juce::FileChooser& fc){
+                            auto file = fc.getResult();
+
+                            if (file.existsAsFile()){
+                                bool loaded = processorRef.loadSample(file);
+                                loadLabel.setText(loaded ? file.getFileName(): "Failed to load", juce::dontSendNotification);
+                            }
+
+                            fileChooser.reset();
+                        });
+  };
+  sampleLevelSlider.setTextBoxStyle(juce::Slider::TextBoxRight, false, 50, 20);
+  sampleLevelLabel.setText("Sample Level", juce::dontSendNotification);
+  sampleSpeedSlider.setTextBoxStyle(juce::Slider::TextBoxRight, false, 50, 20);
+  sampleSpeedLabel.setText("Sample Speed", juce::dontSendNotification);
+  sampleSpeedSlider.setTextBoxStyle(juce::Slider::TextBoxRight, false, 50, 20);
+  sampleSpeedLabel.setText("Sample Speed", juce::dontSendNotification);
+
   addAndMakeVisible(gainSlider);
   addAndMakeVisible(gainLabel);
   addAndMakeVisible(gainButton);
@@ -46,12 +71,23 @@ processorRef(p){
   addAndMakeVisible(frequencyLabel);
   addAndMakeVisible(frequencyButton);
   addAndMakeVisible(waveformBox);
+  addAndMakeVisible(waveformLabel);
+  addAndMakeVisible(loadButton);
+  addAndMakeVisible(loadLabel);
+  addAndMakeVisible(sampleLevelSlider);
+  addAndMakeVisible(sampleLevelLabel);
+  addAndMakeVisible(sampleSpeedSlider);
+  addAndMakeVisible(sampleSpeedLabel);
+  addAndMakeVisible(sampleLoopButton);
 
   gainAttachment = std::make_unique<SliderAttachment>(processorRef.apvts, "gain", gainSlider);
   gainButtonAttachment = std::make_unique<ButtonAttachment>(processorRef.apvts, "gainButton", gainButton);
   frequencyAttachment = std::make_unique<SliderAttachment>(processorRef.apvts, "frequency", frequencySlider);
   frequencyButtonAttachment = std::make_unique<ButtonAttachment>(processorRef.apvts, "frequencyButton", frequencyButton);
   waveformAttachment = std::make_unique<ComboBoxAttachment>(processorRef.apvts, "waveform", waveformBox);
+  sampleLevelAttachment = std::make_unique<SliderAttachment>(processorRef.apvts, "sampleLevel", sampleLevelSlider);
+  sampleSpeedAttachment = std::make_unique<SliderAttachment>(processorRef.apvts, "sampleSpeed", sampleSpeedSlider);
+  sampleLoopAttachment = std::make_unique<ButtonAttachment>(processorRef.apvts, "sampleLoop", sampleLoopButton);
 
   // Make sure that before the constructor has finished, you've set the
   // editor's size to whatever you need it to be.
@@ -82,5 +118,13 @@ void PluginEditor::resized() {
   frequencyLabel.setBounds(40, 40, 40, 20);
   frequencyButton.setBounds(10, 40, 50, 20);
   waveformBox.setBounds(40, 40, 100, 20);
+
+  loadLabel.setBounds(40, 70, getWidth() - 100, 20);
+  loadButton.setBounds(getWidth() - 100, 70, 80, 20);
+  sampleLevelSlider.setBounds(150, 100, getWidth() - 170, 20);
+  sampleLevelLabel.setBounds(40, 100, 100, 20);
+  sampleSpeedSlider.setBounds(150, 130, getWidth() - 170, 20);
+  sampleSpeedLabel.setBounds(40, 130, 100, 20);
+  sampleLoopButton.setBounds(40, 160, 100, 20);
 }
 }  // namespace audio_plugin

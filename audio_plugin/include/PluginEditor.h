@@ -33,7 +33,17 @@ private:
   std::unique_ptr<ButtonAttachment> frequencyButtonAttachment;
   std::unique_ptr<ComboBoxAttachment> waveformAttachment;
 
-  juce::TextButton loadButton{"Load Button"};
+  std::unique_ptr<juce::FileChooser> fileChooser;
+  juce::TextButton loadButton{"Load Files"};
+  juce::Label loadLabel{"Sample File", "No file loaded"};
+  juce::Slider sampleLevelSlider;
+  juce::Label sampleLevelLabel{"Sample Level", "Sample Level"};
+  juce::Slider sampleSpeedSlider;
+  juce::Label sampleSpeedLabel{"Sample Speed", "Sample Speed"};
+  juce::ToggleButton sampleLoopButton{"Sample Loop Button"};
+  std::unique_ptr<SliderAttachment> sampleLevelAttachment;
+  std::unique_ptr<SliderAttachment> sampleSpeedAttachment;
+  std::unique_ptr<ButtonAttachment> sampleLoopAttachment;
 
   
   // This reference is provided as a quick way for your editor to

@@ -37,6 +37,11 @@ public:
 //  }
 
   juce::AudioProcessorValueTreeState apvts;
+
+  SampleSource& getSampleSource() noexcept { return sampleSource; }
+
+  bool loadSample(const juce::File& file){ return sampleSource.loadFile(file); }
+
 private:
   // Parameters parameters{*this};    use apvts to replace parameter.h and .cpp
   static juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout();

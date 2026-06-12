@@ -17,6 +17,15 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParam
   layout.add(std::make_unique<juce::AudioParameterBool>(
       juce::ParameterID{"frequencyButton", 1}, "Frequency Button", false));
 
+  layout.add(std::make_unique<juce::AudioParameterFloat>(
+      juce::ParameterID{"sampleLevel", 1}, "Sample Level", juce::NormalisableRange<float>(0.f, 1.f, 0.01f), 0.5f));
+
+  layout.add(std::make_unique<juce::AudioParameterFloat>(
+      juce::ParameterID{"sampleSpeed", 1}, "Sample Speed", juce::NormalisableRange<float>(0.25f, 2.f ,0.01f), 1.f));
+
+  layout.add(std::make_unique<juce::AudioParameterBool>(
+      juce::ParameterID{"sampleLoop", 1}, "Sample Loop", true));
+
   return layout;
 }
 
@@ -163,9 +172,16 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer,
   waveformSynth.setWaveformType(static_cast<WaveformSynth::WaveformType>(waveformType));
   waveformSynth.process(buffer, currentFreq);
 
-//  if(sampleSource.isLoaded()){
-//    sampleSource.process(buffer);
-//  }
+  if(sampleSource.isLoaded()){
+    float sampleLevel = apvts.getRawParameterValue("sampleLevel")->load();
+    float sampleSpeed = apvts.getRawParameterValue("sampleSpeed")->load();
+    bool sampleLoop = apvts.getRawParameterValue("sampleLoop")->load() > 0.5f;
+
+    sampleSource.setLevel(sampleLevel);
+    sampleSource.setSpeed(sampleSpeed);
+    sampleSource.setLoop(sampleLoop);
+    sampleSource.process(buffer);
+  }
 
   // This is the place where you'd normally do the guts of your plugin's
   // audio processing...
