@@ -31,6 +31,10 @@ public:
 
   float getProgress() const;
 
+  juce::AudioFormatManager& getFormatManager(){
+    return formatManager;
+  }
+
 private:
   juce::AudioFormatManager formatManager;
   std::unique_ptr<juce::FileChooser> fileChooser;

@@ -5,13 +5,16 @@ using ButtonAttachment = juce::AudioProcessorValueTreeState::ButtonAttachment;
 using ComboBoxAttachment = juce::AudioProcessorValueTreeState::ComboBoxAttachment;
 
 namespace audio_plugin {
-class PluginEditor : public juce::AudioProcessorEditor {
+class PluginEditor : public juce::AudioProcessorEditor, public juce::Timer {
 public:
   explicit PluginEditor(PluginProcessor&);
 
   void paint(juce::Graphics&) override;
   void resized() override;
 
+  void timerCallback(){
+    thumbnail.setProgress(processorRef.getSampleSource().getProgress());  
+  }
 private:
   juce::Slider gainSlider;
   juce::Label gainLabel{"gain label", "Gain"};
@@ -46,9 +49,11 @@ private:
   std::unique_ptr<ButtonAttachment> sampleLoopAttachment;
 
   
+  
   // This reference is provided as a quick way for your editor to
   // access the processor object that created it.
   PluginProcessor& processorRef;
+  Thumbnail thumbnail;
 
   JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(PluginEditor)
 };

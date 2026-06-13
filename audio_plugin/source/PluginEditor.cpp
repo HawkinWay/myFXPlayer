@@ -7,7 +7,7 @@ AudioProcessorEditor(&p),
 //frequencyAttachment(p.getParameterRefs().frequency, frequencySlider),
 //frequencyButtonAttachment(p.getParameterRefs().frequencyButton, frequencyButton),
 //waveformAttachment(p.getParameterRefs().waveform, waveformBox),
-processorRef(p){
+processorRef(p),thumbnail(processorRef.getSampleSource().getFormatManager()){
 
   juce::ignoreUnused(processorRef);
 
@@ -42,10 +42,10 @@ processorRef(p){
                                             "*.wav;*.mp3"
                                           );
 
-    auto flags = juce::FileBrowserComponent::openMode
+    auto chooserFlags = juce::FileBrowserComponent::openMode
                  | juce::FileBrowserComponent::canSelectFiles;
 
-    fileChooser->launchAsync(flags,
+    fileChooser->launchAsync(chooserFlags,
                         [this](const juce::FileChooser& fc){
                             auto file = fc.getResult();
 
@@ -55,6 +55,7 @@ processorRef(p){
                                   processorRef.getSampleSource().restart();
                                 }
                                 loadLabel.setText(loaded ? file.getFileName(): "Failed to load", juce::dontSendNotification);
+                                thumbnail.loadFile(file);
                             }
 
                             fileChooser.reset();
@@ -82,6 +83,7 @@ processorRef(p){
   addAndMakeVisible(sampleSpeedSlider);
   addAndMakeVisible(sampleSpeedLabel);
   addAndMakeVisible(sampleLoopButton);
+  addAndMakeVisible(thumbnail);
 
   gainAttachment = std::make_unique<SliderAttachment>(processorRef.apvts, ParamIDs::gain, gainSlider);
   gainButtonAttachment = std::make_unique<ButtonAttachment>(processorRef.apvts, ParamIDs::gainButton, gainButton);
@@ -92,6 +94,7 @@ processorRef(p){
   sampleSpeedAttachment = std::make_unique<SliderAttachment>(processorRef.apvts, ParamIDs::sampleSpeed, sampleSpeedSlider);
   sampleLoopAttachment = std::make_unique<ButtonAttachment>(processorRef.apvts, ParamIDs::sampleLoop, sampleLoopButton);
 
+  startTimerHz(30);
   // Make sure that before the constructor has finished, you've set the
   // editor's size to whatever you need it to be.
   setSize(600, 500);
@@ -129,5 +132,7 @@ void PluginEditor::resized() {
   sampleSpeedSlider.setBounds(150, 130, getWidth() - 170, 20);
   sampleSpeedLabel.setBounds(40, 130, 100, 20);
   sampleLoopButton.setBounds(40, 160, 100, 20);
+
+  thumbnail.setBounds(40, 190, getWidth() - 80, 240);
 }
 }  // namespace audio_plugin

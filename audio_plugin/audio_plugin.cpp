@@ -2,6 +2,7 @@
 
 #include "source/SampleSource.cpp"
 // #include "source/Parameters.cpp"
+#include "source/Thumbnail.cpp"
 #include "source/PluginProcessor.cpp"
 #include "source/PluginEditor.cpp"
 

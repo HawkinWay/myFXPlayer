@@ -4,6 +4,7 @@ namespace audio_plugin {
 class Noise {
 public:
   void prepare(double sampleRate, int samplesPerBlock) noexcept{
+    juce::ignoreUnused(samplesPerBlock);
     smoothedNoiseGain.reset(sampleRate, 0.02);
   }
 
