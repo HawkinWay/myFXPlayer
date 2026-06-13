@@ -4,7 +4,7 @@ SampleSource::SampleSource() {
 }
 
 bool SampleSource::loadFile(const juce::File& file) {
-  if (file == juce::File{}) {
+  if (!file.existsAsFile()) {
     return false;
   }
   const std::unique_ptr<juce::AudioFormatReader> reader(formatManager.createReaderFor(file));
@@ -24,10 +24,15 @@ bool SampleSource::loadFile(const juce::File& file) {
 
   readPosition = 0.0;
 
+  state = SampleSource::State::Stopped;
   return true;
 }
 
 void SampleSource::process(juce::AudioBuffer<float>& buffer) {
+  if(state != State::Playing){
+    return;
+  }
+
   const int numSampleSamples = sampleBuffer.getNumSamples();
 
   if (numSampleSamples == 0) {
@@ -44,20 +49,22 @@ void SampleSource::process(juce::AudioBuffer<float>& buffer) {
 
     if (posIdx >= numSampleSamples - 1) {
       if (loop){
+
         readPosition = 0.0;
         posIdx = 0;
       }
       else{
-        for (int ch = 0; ch < numOutputChannels; ++ch)
-          buffer.getWritePointer(ch)[sampleIdx] = 0.0f;
-        continue;
+        // for (int ch = 0; ch < numOutputChannels; ++ch)
+        //   buffer.getWritePointer(ch)[sampleIdx] = 0.0f;
+        // continue;
+        state = SampleSource::State::Stopped;
+        break;
       }
     }
 
     int nextPosIdx = (posIdx + 1) % numSampleSamples;
 
-    for (int ch = 0; ch < numOutputChannels; ++ch)
-    {
+    for (int ch = 0; ch < numOutputChannels; ++ch){
       int sourceChannel = std::min(ch, numSampleChannels - 1);
       auto* data = buffer.getWritePointer(ch);
 
@@ -84,15 +91,38 @@ void SampleSource::setLoop(bool shouldLoop) {
   loop = shouldLoop;
 }
 
+void SampleSource::play(){
+  if(isLoaded()){
+    state = SampleSource::State::Playing;
+  }
+}
+
 void SampleSource::stop() {
-  readPosition = sampleBuffer.getNumSamples();
+  if(isLoaded()){
+    state = SampleSource::State::Stopped;
+  }
 }
 
 void SampleSource::restart() {
-  readPosition = 0.0;
+  if(isLoaded()){
+    readPosition = 0.0;
+    state = SampleSource::State::Playing;
+  }
 }
 
-bool SampleSource::isLoaded(){
+bool SampleSource::isLoaded() const{
   return sampleBuffer.getNumSamples() > 0;
 }
+
+float SampleSource::getProgress() const{
+  if(!isLoaded()){
+    return 0.f;
+  }
+
+  return juce::jlimit(0.f,
+                      1.f,
+                      static_cast<float>(readPosition / sampleBuffer.getNumSamples()));
+
+}
+
 }

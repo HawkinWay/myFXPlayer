@@ -21,11 +21,15 @@ public:
 
   void setLoop(bool shouldLoop);
 
+  void play();
+
   void stop();
 
   void restart();
 
-  bool isLoaded();
+  bool isLoaded() const;
+
+  float getProgress() const;
 
 private:
   juce::AudioFormatManager formatManager;

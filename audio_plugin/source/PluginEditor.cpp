@@ -51,6 +51,9 @@ processorRef(p){
 
                             if (file.existsAsFile()){
                                 bool loaded = processorRef.loadSample(file);
+                                if(loaded){
+                                  processorRef.getSampleSource().restart();
+                                }
                                 loadLabel.setText(loaded ? file.getFileName(): "Failed to load", juce::dontSendNotification);
                             }
 

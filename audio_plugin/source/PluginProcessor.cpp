@@ -162,7 +162,7 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer,
 
 //  int waveformIndex = parameters.waveform.getIndex();
 //  float currentFrequency = parameters.frequency.get();
-//  auto FrequencyButton = parameters.frequencyButton.get();
+//  auto FrequencyButton = parameters.frequencyButton.get(); 
   float currentFreq = apvts.getRawParameterValue("frequency")->load();
   bool freqButton = apvts.getRawParameterValue("frequencyButton")->load() > 0.5f;
   int waveformType = static_cast<int>(apvts.getRawParameterValue("waveform")->load());
