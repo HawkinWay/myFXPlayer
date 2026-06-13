@@ -3,28 +3,28 @@ juce::AudioProcessorValueTreeState::ParameterLayout PluginProcessor::createParam
   juce::AudioProcessorValueTreeState::ParameterLayout layout;
 
   layout.add(std::make_unique<juce::AudioParameterFloat>(
-      juce::ParameterID{"gain", 1}, "Gain", juce::NormalisableRange<float>(0.0f, 0.25f, 0.01f), 0.12f));
+      juce::ParameterID{ParamIDs::gain, 1}, "Gain", juce::NormalisableRange<float>(0.0f, 0.25f, 0.01f), 0.12f));
 
   layout.add(std::make_unique<juce::AudioParameterBool>(
-      juce::ParameterID{"gainButton", 1}, "Gain Button", false));
+      juce::ParameterID{ParamIDs::gainButton, 1}, "Gain Button", false));
 
   layout.add(std::make_unique<juce::AudioParameterChoice>(
-      juce::ParameterID{"waveform", 1}, "Waveform", juce::StringArray{"Sine", "Sawtooth", "Square"}, 0));
+      juce::ParameterID{ParamIDs::waveform, 1}, "Waveform", juce::StringArray{"Sine", "Sawtooth", "Square"}, 0));
 
   layout.add(std::make_unique<juce::AudioParameterFloat>(
-      juce::ParameterID{"frequency", 1}, "Frequency", juce::NormalisableRange<float>(50.0f, 500.0f, 0.01f), 200.0f));
+      juce::ParameterID{ParamIDs::frequency, 1}, "Frequency", juce::NormalisableRange<float>(50.0f, 500.0f, 0.01f), 200.0f));
 
   layout.add(std::make_unique<juce::AudioParameterBool>(
-      juce::ParameterID{"frequencyButton", 1}, "Frequency Button", false));
+      juce::ParameterID{ParamIDs::frequencyButton, 1}, "Frequency Button", false));
 
   layout.add(std::make_unique<juce::AudioParameterFloat>(
-      juce::ParameterID{"sampleLevel", 1}, "Sample Level", juce::NormalisableRange<float>(0.f, 1.f, 0.01f), 0.5f));
+      juce::ParameterID{ParamIDs::sampleLevel, 1}, "Sample Level", juce::NormalisableRange<float>(0.f, 1.f, 0.01f), 0.5f));
 
   layout.add(std::make_unique<juce::AudioParameterFloat>(
-      juce::ParameterID{"sampleSpeed", 1}, "Sample Speed", juce::NormalisableRange<float>(0.25f, 2.f ,0.01f), 1.f));
+      juce::ParameterID{ParamIDs::sampleSpeed, 1}, "Sample Speed", juce::NormalisableRange<float>(0.25f, 2.f ,0.01f), 1.f));
 
   layout.add(std::make_unique<juce::AudioParameterBool>(
-      juce::ParameterID{"sampleLoop", 1}, "Sample Loop", true));
+      juce::ParameterID{ParamIDs::sampleLoop, 1}, "Sample Loop", true));
 
   return layout;
 }
@@ -152,9 +152,9 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer,
 
 
   // float currentGain = parameters.gain.get();
-  float currentGain = apvts.getRawParameterValue("gain")->load();
+  float currentGain = getFloat(apvts, ParamIDs::gain);
   // auto NoiseButton = parameters.gainButton.get();
-  bool NoiseButton = apvts.getRawParameterValue("gainButton")->load() > 0.5f;
+  bool NoiseButton = getBool(apvts, ParamIDs::gainButton);
   if (!NoiseButton) {
     currentGain = 0.f;
   }
@@ -163,9 +163,9 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer,
 //  int waveformIndex = parameters.waveform.getIndex();
 //  float currentFrequency = parameters.frequency.get();
 //  auto FrequencyButton = parameters.frequencyButton.get(); 
-  float currentFreq = apvts.getRawParameterValue("frequency")->load();
-  bool freqButton = apvts.getRawParameterValue("frequencyButton")->load() > 0.5f;
-  int waveformType = static_cast<int>(apvts.getRawParameterValue("waveform")->load());
+  float currentFreq = getFloat(apvts, ParamIDs::frequency);
+  bool freqButton = getBool(apvts, ParamIDs::frequencyButton);
+  int waveformType = getChoice(apvts, ParamIDs::waveform);
   if (!freqButton) {
     currentFreq = 0.f;
   }
@@ -173,9 +173,9 @@ void PluginProcessor::processBlock(juce::AudioBuffer<float>& buffer,
   waveformSynth.process(buffer, currentFreq);
 
   if(sampleSource.isLoaded()){
-    float sampleLevel = apvts.getRawParameterValue("sampleLevel")->load();
-    float sampleSpeed = apvts.getRawParameterValue("sampleSpeed")->load();
-    bool sampleLoop = apvts.getRawParameterValue("sampleLoop")->load() > 0.5f;
+    float sampleLevel = getFloat(apvts, ParamIDs::sampleLevel);
+    float sampleSpeed = getFloat(apvts, ParamIDs::sampleSpeed);
+    bool sampleLoop = getBool(apvts, ParamIDs::sampleLoop);
 
     sampleSource.setLevel(sampleLevel);
     sampleSource.setSpeed(sampleSpeed);

@@ -83,14 +83,14 @@ processorRef(p){
   addAndMakeVisible(sampleSpeedLabel);
   addAndMakeVisible(sampleLoopButton);
 
-  gainAttachment = std::make_unique<SliderAttachment>(processorRef.apvts, "gain", gainSlider);
-  gainButtonAttachment = std::make_unique<ButtonAttachment>(processorRef.apvts, "gainButton", gainButton);
-  frequencyAttachment = std::make_unique<SliderAttachment>(processorRef.apvts, "frequency", frequencySlider);
-  frequencyButtonAttachment = std::make_unique<ButtonAttachment>(processorRef.apvts, "frequencyButton", frequencyButton);
-  waveformAttachment = std::make_unique<ComboBoxAttachment>(processorRef.apvts, "waveform", waveformBox);
-  sampleLevelAttachment = std::make_unique<SliderAttachment>(processorRef.apvts, "sampleLevel", sampleLevelSlider);
-  sampleSpeedAttachment = std::make_unique<SliderAttachment>(processorRef.apvts, "sampleSpeed", sampleSpeedSlider);
-  sampleLoopAttachment = std::make_unique<ButtonAttachment>(processorRef.apvts, "sampleLoop", sampleLoopButton);
+  gainAttachment = std::make_unique<SliderAttachment>(processorRef.apvts, ParamIDs::gain, gainSlider);
+  gainButtonAttachment = std::make_unique<ButtonAttachment>(processorRef.apvts, ParamIDs::gainButton, gainButton);
+  frequencyAttachment = std::make_unique<SliderAttachment>(processorRef.apvts, ParamIDs::frequency, frequencySlider);
+  frequencyButtonAttachment = std::make_unique<ButtonAttachment>(processorRef.apvts, ParamIDs::frequencyButton, frequencyButton);
+  waveformAttachment = std::make_unique<ComboBoxAttachment>(processorRef.apvts, ParamIDs::waveform, waveformBox);
+  sampleLevelAttachment = std::make_unique<SliderAttachment>(processorRef.apvts, ParamIDs::sampleLevel, sampleLevelSlider);
+  sampleSpeedAttachment = std::make_unique<SliderAttachment>(processorRef.apvts, ParamIDs::sampleSpeed, sampleSpeedSlider);
+  sampleLoopAttachment = std::make_unique<ButtonAttachment>(processorRef.apvts, ParamIDs::sampleLoop, sampleLoopButton);
 
   // Make sure that before the constructor has finished, you've set the
   // editor's size to whatever you need it to be.

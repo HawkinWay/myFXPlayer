@@ -34,6 +34,8 @@ END_JUCE_MODULE_DECLARATION
 #include "include/WaveformSynth.h"
 #include "include/SampleSource.h"
 // #include "include/Parameters.h"
+#include "include/ParameterIDs.h"
+#include "include/ParameterHelpers.h"
 #include "include/PluginProcessor.h"
 #include "include/PluginEditor.h"
 
